@@ -55,3 +55,46 @@ where \(\alpha\) controls the balance between the two parts.
 - tqdm
 - PIL
 - matplotlib
+
+  # Dataset Preparation and Augmentation
+
+This project utilizes dermoscopic images from the **ISIC 2024 Challenge Dataset** to construct a high-quality training and validation set for model development.
+
+## Dataset Selection
+
+- **Training Set**:
+  - 40,000 negative samples (class 0)
+  - 1,672 positive samples (class 1)
+
+- **Validation Set**:
+  - 10,000 negative samples (class 0)
+  - 419 positive samples (class 1)
+
+Images are resized to **224x224** pixels and normalized using ImageNet mean and standard deviation:
+- Mean: `[0.485, 0.456, 0.406]`
+- Standard Deviation: `[0.229, 0.224, 0.225]`
+
+To address class imbalance, random shuffling and balanced sampling strategies are applied during training.
+
+## Data Augmentation
+
+During training, the following data augmentations are applied probabilistically to enhance model generalization:
+
+- **Random Horizontal Flip**: Probability = 0.5
+- **Random Rotation**: Range = [-30°, +30°]
+- **Random Scaling**: Scale factor between 0.8 and 1.2
+- **Color Jitter**:
+  - Brightness adjustment: ±0.2
+  - Contrast adjustment: ±0.2
+  - Saturation adjustment: ±0.2
+  - Hue adjustment: ±0.2
+
+## Preprocessing
+
+Prior to augmentation, all images undergo:
+- **Hair Artifact Removal** using a black-hat morphological operation and inpainting (Telea method)
+- **Perceptual Filtering** using VGG16 feature extraction to retain high-quality generated samples
+
+---
+
+This preprocessing and augmentation pipeline ensures that the training dataset is both diverse and clinically realistic, which is critical for robust model performance.
