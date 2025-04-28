@@ -1,13 +1,6 @@
 # ISIC2024KD
 
-# Feature Matching Knowledge Distillation
-
-This project implements a **feature matching knowledge distillation** framework where a lightweight **ViT-small** student model is trained to mimic intermediate feature representations of a **SwinV2** teacher model.  
-The task focuses on binary classification using the **ISIC 2024** Challenge medical imaging dataset, with a highly imbalanced distribution (40,000 benign vs. 1,672 malignant samples).  
-The training pipeline applies standard data augmentations (random cropping, flipping, rotation), and optimizes a combined classification loss and feature-level MSE loss.  
-Model performance is evaluated using **AUC**, **PR-AUC**, and **pAUC** metrics.
-
-## Distillation Strategy
+# Feature Matching Knowledge Distillation (feature_matching.ipynb)
 
 The distillation strategy combines two objectives:
 
@@ -44,6 +37,30 @@ where \(\alpha\) controls the balance between the two parts.
 
 - **Evaluation**:  
   After each epoch, evaluate model performance using validation AUC, PR-AUC, and pAUC@0.8 metrics.
+
+## Response-based Knowledge Distillation (distill_reponse.py)
+
+This approach focuses on **matching the softened output logits** of the teacher and student networks.  
+Specifically, it combines:
+- A weighted **Cross-Entropy Loss** on the student’s predictions, and
+- A **KL Divergence Loss** between the softened outputs (logits) of teacher and student.
+
+###  Hyperparameters
+
+| Parameter               | Value                             | Description                                           |
+|--------------------------|-----------------------------------|-------------------------------------------------------|
+| `T` (Temperature)        | 4.0                               | Softens logits to expose dark knowledge               |
+| `α` (Alpha)              | 0.6                               | Weight between CE loss (α) and KL loss (1-α)          |
+| Batch size               | 32                                | Images per batch                                     |
+| Image size               | 256×256 (teacher) / 224×224 (student) | Input resizing strategy                          |
+| Learning rate            | 1e-4                              | Adam optimizer                                       |
+| Optimizer                | Adam                              | Adaptive Moment Estimation                           |
+| Scheduler                | ReduceLROnPlateau                 | Reduce learning rate if validation pAUC plateaus     |
+| Epochs                   | 20                                | Number of training epochs                           |
+| Save checkpoint          | Best model based on validation pAUC | Best model is automatically saved                 |
+
+**Weighted Loss:**  
+To address severe class imbalance in skin cancer data, a **custom class-weighted CrossEntropyLoss** is used, emphasizing the malignant class.
 
 ## Environment
 - Python 3.8+
