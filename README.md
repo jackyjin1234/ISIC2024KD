@@ -38,14 +38,14 @@ where \(\alpha\) controls the balance between the two parts.
 - **Evaluation**:  
   After each epoch, evaluate model performance using validation AUC, PR-AUC, and pAUC@0.8 metrics.
 
-## Response-based Knowledge Distillation (distill_reponse.py)
+# Response-based Knowledge Distillation (distill_reponse.py)
 
 This approach focuses on **matching the softened output logits** of the teacher and student networks.  
 Specifically, it combines:
 - A weighted **Cross-Entropy Loss** on the student’s predictions, and
 - A **KL Divergence Loss** between the softened outputs (logits) of teacher and student.
 
-###  Hyperparameters
+##  Hyperparameters
 
 | Parameter               | Value                             | Description                                           |
 |--------------------------|-----------------------------------|-------------------------------------------------------|
