@@ -13,9 +13,9 @@ The distillation strategy combines two objectives:
 
 The total loss is a weighted sum:
 
-\[
+$$
 \text{Total Loss} = (1 - \alpha) \times \text{Classification Loss} + \alpha \times \text{Feature Matching Loss}
-\]
+$$
 
 where \(\alpha\) controls the balance between the two parts.
 
@@ -61,6 +61,28 @@ Specifically, it combines:
 
 **Weighted Loss:**  
 To address severe class imbalance in skin cancer data, a **custom class-weighted CrossEntropyLoss** is used, emphasizing the malignant class.
+
+# Token-based Knowledge Distillation (TokenKD.py)
+Token-based knowledge distillation aims to transfer fine-grained knowledge from a large teacher model to a smaller student model by matching their outputs and internal representations at the token level, rather than just at the final prediction or feature level. This approach enables the student model to better capture the nuanced information encoded in the teacher’s token-wise outputs, leading to improved performance.
+
+### Distillation Loss
+
+The total loss used for training is a weighted sum of three components:
+
+1. **Classification Loss:**
+   Standard cross-entropy loss between the student’s predictions and the ground-truth labels, with class weighting to address imbalance.
+2. **Token-level KL Divergence Loss:**
+   KL divergence between the softened output logits (using temperature scaling) of the teacher and student models. This encourages the student to mimic the teacher’s token-wise output distribution, capturing “dark knowledge” about class relationships.
+3. **Feature Matching Loss:**
+   Mean squared error (MSE) between the intermediate token features of the teacher and student. This enforces alignment not just at the output, but throughout the token representations.
+
+The combined loss is:
+
+$$
+\text{Total Loss} = (1 - \alpha) \times \text{Classification Loss} + \alpha \times (0.7 \times \text{KL Loss} + 0.3 \times \text{Feature Loss})
+$$
+
+where $\alpha$ balances supervised and distillation objectives, and the 0.7/0.3 split weights the importance of output versus feature alignment.
 
 ## Environment
 - Python 3.8+
