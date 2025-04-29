@@ -58,6 +58,16 @@ Specifically, it combines:
 | Scheduler                | ReduceLROnPlateau                 | Reduce learning rate if validation pAUC plateaus     |
 | Epochs                   | 20                                | Number of training epochs                           |
 | Save checkpoint          | Best model based on validation pAUC | Best model is automatically saved                 |
+| `n_estimators`           | 600                                       | Number of boosting rounds (trees)           |
+| `learning_rate`          | 0.05                                      | Shrinkage (step size)                       |
+| `max_depth`              | 5                                         | Maximum depth of each tree                  |
+| `subsample`              | 0.8                                       | Fraction of rows sampled per tree           |
+| `colsample_bytree`       | 0.8                                       | Fraction of features sampled per tree       |
+| `scale_pos_weight`       | `sum(y_tr==0)/sum(y_tr==1)` (≈ 24)        | Balances class imbalance                    |
+| `eval_metric`            | `auc`                                     | Evaluation metric for early stopping       |
+| `tree_method`            | `gpu_hist` (or `hist` if no GPU)         | Tree construction algorithm                 |
+| `early_stopping_rounds`  | 50                                        | Stop if validation AUC does not improve     |
+| `random_state`           | 42                                        | Seed for reproducible train/validation split|
 
 **Weighted Loss:**  
 To address severe class imbalance in skin cancer data, a **custom class-weighted CrossEntropyLoss** is used, emphasizing the malignant class.
