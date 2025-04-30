@@ -1,5 +1,32 @@
 # ISIC2024KD
 
+# File Structure
+
+- `pipeline.py`: The main script to train the student with combined distillation and train the downstream GBDT.
+- `distill_reponse.py`: Contains dataset, model loading, evaluation, and response-based KD logic.
+- `feature_matching.py`: (Extracted from `feature_matching.ipynb`) Implements feature-matching loss.
+- `TokenKD.py`: (Extracted from `TokenKD.ipynb`) Implements token-based distillation loss.
+- `GBDT.py`: Extracts features and trains the GBDT model from image embeddings and metadata.
+
+# Combined Knowledge Distillation and GBDT Pipeline
+
+```bash
+python pipeline.py \
+  --root_dir /path/to/images \
+  --meta_csv /path/to/train-metadata.csv \
+  --h5_file /path/to/train-image.hdf5 \
+  --teacher_ckpt /path/to/teacher_checkpoint.ckpt \
+  --epochs 20 \
+  --batch_size 32 \
+  --lr 1e-4 \
+  --w_feat 1.0 \
+  --w_token 1.0 \
+  --w_resp 0.6 \
+  --T_temp 4.0 \
+  --alpha_resp 0.6 \
+  --save_dir ./checkpoints
+```
+
 # Feature Matching Knowledge Distillation (feature_matching.ipynb)
 
 The distillation strategy combines two objectives:
